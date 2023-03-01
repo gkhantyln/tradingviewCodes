@@ -1,0 +1,209 @@
+study(title="DR_ALLINONE_OVER_1", overlay=true)
+
+sBOLs = input (false, "Bolinger Band")
+sMAxs = input (false, "EMA Ribbon X + GOLDEN / DEATH CROSS | SMA")
+sCloud = input (false, "Ichimoku Cloud")
+//sFiboZone = input (false, "Fibonacci Zone")
+sSuper = input (false, "SuperTrend + MavilimW")
+//sSuper = input (false, "Mavilim - Göster/Gizle")
+//RSI = input(title="RSI", defval=7, minval=1, maxval = 100)
+
+//per=input(21, "Fibo Son Bar ## Hesapla")
+//hl=iff(sFiboZone, highest(high,per), na) //High Line (Border)
+//ll=iff(sFiboZone, lowest(low,per), na)   //Low Line  (Border)
+
+//dist=hl-ll          //range of the channel    
+//hf=iff(sFiboZone, hl-dist*0.236, na)    //Highest Fibonacci line
+//cfh=iff(sFiboZone, hl-dist*0.382, na)    //Center High Fibonacci line
+//cfl=iff(sFiboZone, hl-dist*0.618 , na)   //Center Low Fibonacci line
+//lf=iff(sFiboZone, hl-dist*0.764, na)    //Lowest Fibonacci line
+
+
+//fill(plot(hl, title="high border"), plot(hf), color = iff(sFiboZone, red, na)) //up trend zone
+//fill(plot(cfh), plot(cfl), color = iff(sFiboZone, white, na))   // ranging zone
+//fill(plot(ll, title="low border"), plot(lf), color=iff(sFiboZone, green, na))   //down trend zone
+
+//plot(hl, color =iff(sFiboZone, red, na), title="Fib High", linewidth=1)
+//plot(hf, color =iff(sFiboZone, red, na), title="Fib 1", linewidth=1)
+//plot(cfh, color =iff(sFiboZone, red, na), title="Fib 2", linewidth=1)
+//plot(ll, color =iff(sFiboZone, green, na), title="Fib Low", linewidth=1)
+//plot(cfl, color =iff(sFiboZone, green, na), title="Fib 4", linewidth=1)
+//plot(lf, color =iff(sFiboZone, green, na), title="Fib 5", linewidth=1)
+
+//BB
+sourcex = close
+lengthx = input(20, minval=1)
+mult = input(2.0, minval=0.001, maxval=50)
+basisx = sma(sourcex, lengthx)
+devx = iff(sBOLs, mult * stdev(sourcex, lengthx), na)
+upperx = basisx + devx
+lowerx = basisx - devx
+plot(basisx, color=iff(sBOLs, red, na))
+p11 = plot(upperx, color=iff(sBOLs, aqua, na))
+p22 = plot(lowerx, color=iff(sBOLs, aqua, na))
+fill(p11, p22)
+
+
+//EMA Periods are set to standard
+
+//Ema1Periods = input(7, minval=1, title="Ema 1")
+//Ema2Periods = input(13, minval=1, title="Ema 2")
+//Ema3Periods = input(20, minval=1, title="Ema 1")
+Ema4Periods = input(50, minval=1, title="Ema 2")
+Ema5Periods = input(100, minval=1, title="Ema 3")
+Ema6Periods = input(200, minval=1, title="Ema 4")
+
+
+
+//shortest = ema(close, Ema1Periods)
+//short = ema(close, Ema2Periods)
+//longer = ema(close, Ema3Periods)
+longest = ema(close, Ema4Periods)
+longestx = ema(close, Ema5Periods)
+longeste = sma(close, Ema6Periods)
+
+//plot(shortest, color =iff(sMAxs, aqua, na), title="Ema 1", linewidth=1)
+//plot(short, color =iff(sMAxs, yellow, na), title="Ema 2", linewidth=1)
+//plot(longer, color =iff(sMAxs, red, na), title="Ema 1", linewidth=2)
+
+
+p3 = plot(longest, color =iff(sMAxs, white, na), title="Ema 2", linewidth=4)
+plot(longestx, color =iff(sMAxs, gray, na), title="Ema 3", linewidth=3)
+p4 = plot(longeste, color =iff(sMAxs, green, na), title="Ema 4", linewidth=4)
+
+fill(p3, p4, color=#FFFFFF, transp=90)
+
+
+//EMA Ribbon
+plot(ema(close,20),title="20",color=iff(sMAxs, #f7df9b, na),linewidth=1,transp=0)
+plot(ema(close,25),title="25",color=iff(sMAxs, #f1c789, na),linewidth=1,transp=0)
+plot(ema(close,30),title="30",color=iff(sMAxs, #e59a67, na),linewidth=1,transp=0)
+plot(ema(close,35),title="35",color=iff(sMAxs, #d66e46, na),linewidth=1,transp=0)
+plot(ema(close,40),title="40",color=iff(sMAxs, #c14c32, na),linewidth=1,transp=0)
+plot(ema(close,45),title="45",color=iff(sMAxs, #a43328, na),linewidth=1,transp=0)
+//plot(ema(close,50),title="50",color=#861f24,linewidth=1,transp=0)
+plot(ema(close,55),title="55",color=iff(sMAxs, #711120, na),linewidth=1,transp=0)
+//Golden Cross - Death Cross + Belirteci
+plot(cross(longest, longeste) ? longest : na, style=cross, linewidth = 6, color=iff(sMAxs, longeste>longest? red:green, na),transp=5, editable=true)
+
+//ICHIMOKU
+
+// Colors
+colorGreen= #00ff00
+colorRed = #ff0000
+colorTenkanViolet = #00ffff
+colorKijun = #ffff00
+colorLime = #bf005f
+colorMaroon =#8b0000
+
+//Periods are set to standard
+tenkanPeriods = input(9, minval=1, title="Tenkan")
+kijunPeriods = input(26, minval=1, title="Kijun")
+chikouPeriods = input(52, minval=1, title="Chikou")
+displacement = input(26, minval=1, title="Offset")
+donchian(len) => avg(lowest(len), highest(len))
+
+
+tenkan = donchian(tenkanPeriods)
+kijun = donchian(kijunPeriods)
+
+senkouA = avg(tenkan, kijun)
+senkouB = donchian(chikouPeriods)
+
+displacedSenkouA = senkouA[displacement]
+displacedSenkouB = senkouB[displacement] 
+
+bullishSignal = crossover(tenkan, kijun)
+bearishSignal = crossunder(tenkan, kijun)
+
+bullishSignalValues = iff(bullishSignal, tenkan, na)
+bearishSignalValues = iff(bearishSignal, tenkan, na)
+
+strongBullishSignal = bullishSignalValues > displacedSenkouA and bullishSignalValues > displacedSenkouB
+neutralBullishSignal = (bullishSignalValues > displacedSenkouA and bullishSignalValues < displacedSenkouB) or (bullishSignalValues < displacedSenkouA and bullishSignalValues > displacedSenkouB)
+weakBullishSignal = bullishSignalValues < displacedSenkouA and bullishSignalValues < displacedSenkouB
+
+strongBearishSignal = bearishSignalValues < displacedSenkouA and bearishSignalValues < displacedSenkouB
+neutralBearishSignal = (bearishSignalValues > displacedSenkouA and bearishSignalValues < displacedSenkouB) or (bearishSignalValues < displacedSenkouA and bearishSignalValues > displacedSenkouB)
+weakBearishSignal = bearishSignalValues > displacedSenkouA and bearishSignalValues > displacedSenkouB
+
+// If you wish to add neutral and weak signals display remove "//" from the raws below
+
+plotshape(neutralBullishSignal, style=shape.flag, size=size.small, location=location.abovebar, title="Nötr Yükseliş Sinyalleri", color=iff(sCloud, colorGreen, na))
+plotshape(weakBullishSignal, style=shape.xcross, size=size.tiny, location=location.abovebar, title="Zayıf Yükseliş Sinyalleri", color=iff(sCloud, colorGreen, na))
+plotshape(neutralBearishSignal, style=shape.flag, size=size.small, location=location.belowbar, title="Nötr Düşüş Sinyalleri", color=iff(sCloud, colorRed, na))
+plotshape(weakBearishSignal, style=shape.xcross, size=size.tiny, location=location.belowbar, title="Zayıf Düşüş Sinyalleri", color=iff(sCloud, colorRed, na))
+
+plotchar(iff(sCloud, strongBearishSignal, na), text="Düşüş", char='↓' , location=location.abovebar,color=colorRed, transp=0,size=size.small)
+plotchar(iff(sCloud, strongBullishSignal, na),  text="Yükseliş", char='↑', location=location.belowbar,color=colorGreen,transp=0,size=size.small)
+
+plot(tenkan, color=iff(sCloud, colorTenkanViolet, na), title="Tenkan", linewidth=4)
+plot(kijun, color=iff(sCloud, colorKijun, na), title="Kijun", linewidth=4)
+
+plot(close, offset = -displacement, color=iff(sCloud, colorLime, na), title="Chikou", linewidth=3)
+
+p1 = plot(senkouA, offset=displacement, color=iff(sCloud, colorGreen, na), title="Senkou A", linewidth=1)
+p2 = plot(senkouB, offset=displacement, color=iff(sCloud, colorRed, na), title="Senkou B", linewidth=1)
+
+
+fill(p1, p2, color = iff(sCloud, senkouA > senkouB ? colorGreen : colorRed, na))   
+
+// Alerts
+alertcondition(strongBullishSignal, title='Güçlü Yükseliş Sinyali', message='{{exchange}}:{{ticker}} Strong Bullish Signal')
+alertcondition(strongBearishSignal, title='Güçlü Düşüş Sinyali', message='{{exchange}}:{{ticker}} Strong Bearish Signal')
+
+// If you wish to have weak and neutral signals custom alerts remove "//" from the raws below
+alertcondition(neutralBullishSignal, title='Nötr Yükseliş Sinyali', message='{{exchange}}:{{ticker}} Neutral Bullish Signal')
+alertcondition(neutralBearishSignal, title='Nötr Düşüş Sinyali', message='{{exchange}}:{{ticker}} Neutral Bearish Signal')
+alertcondition(weakBullishSignal, title='Zayıf Yükseliş Sinyali', message='{{exchange}}:{{ticker}} Weak Bullish Signal')
+alertcondition(weakBearishSignal, title='Zayıf Düşüş Sinyali', message='{{exchange}}:{{ticker}} Weak Bearish Signal')
+
+Factor=input(3, minval=1,maxval = 100)
+Pd=input(7, minval=1,maxval = 100)
+
+Up=hl2-(Factor*atr(Pd))
+Dn=hl2+(Factor*atr(Pd))
+
+TrendUp=close[1]>TrendUp[1]? max(Up,TrendUp[1]) : Up
+TrendDown=close[1]<TrendDown[1]? min(Dn,TrendDown[1]) : Dn
+
+Trend = close > TrendDown[1] ? 1: close< TrendUp[1]? -1: nz(Trend[1],1)
+Tsl = Trend==1? TrendUp: TrendDown
+
+linecolor = Trend == 1 ? green : red
+
+plot(Tsl, color = iff(sSuper, linecolor, na) , style = line , linewidth = 4,title = "SuperTrend")
+
+plotshape(cross(close,Tsl) and close>Tsl , "Up Arrow", shape.triangleup,location.belowbar,iff(sSuper, green, na),0,0)
+plotshape(cross(Tsl,close) and close<Tsl , "Down Arrow", shape.triangledown , location.abovebar, iff(sSuper, red, na),0,0)
+
+//golong =  Trend == 1 and Trend[1] == -1
+//alertcondition(golong, title='Long', message='SuperTrend V.1 Alert Long')
+//goshort =   Trend == -1 and Trend[1] == 1
+//alertcondition(goshort, title='Short', message='SuperTrend V.1 Alert Short')
+
+M1= wma(close, 3)
+M2= wma(M1, 5)
+M3= wma(M2, 8)
+M4= wma(M3, 13)
+M5= wma(M4, 21)
+MAVW= wma(M5, 34)
+plot(MAVW, color=iff(sSuper, aqua, na), title="Mavilim", linewidth=3)
+
+//RSI
+//src = close,
+
+//ep = 2 * RSI - 1
+//auc = ema( max( src - src[1], 0 ), ep )
+//adc = ema( max( src[1] - src, 0 ), ep )
+//x1 = (RSI - 1) * ( adc * 70 / (100-70) - auc)
+//ub = iff( x1 >= 0, src + x1, src + x1 * (100-70)/70 )
+//x2 = (RSI - 1) * ( adc * 30 / (100-30) - auc)
+//lb = iff( x2 >= 0, src + x2, src + x2 * (100-30)/30 )
+
+//plot(avg(ub, lb), color=iff(sSuper, purple, na), style = line, linewidth=2, title="RSI")
+
+
+
+
+
